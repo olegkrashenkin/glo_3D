@@ -8,26 +8,40 @@ const timer = (deadline) => {
         let dateNow = new Date().getTime()
         let timeRemaning = (dateStop - dateNow) / 1000
         let days = Math.floor(timeRemaning / 60 / 60 / 24)
-        let hours = Math.floor((timeRemaning / 60 / 60))// % 24)
+        let hours = Math.floor((timeRemaning / 60 / 60) % 24)
         let minutes = Math.floor((timeRemaning / 60) % 60)
         let seconds = Math.floor(timeRemaning % 60)
 
         return { timeRemaning, days, hours, minutes, seconds }
     }
 
-    const updateClock = () => {
-        let getTime = getTimeRemaning()
+    const showDays = () => {
+        const spanDays = document.createElement('span')
 
-        timerHours.textContent = getTime.hours
-        timerMinutes.textContent = getTime.minutes
-        timerSeconds.textContent = getTime.seconds
-
-        if (getTime.timeRemaning > 0) {
-            setTimeout(updateClock, 1000)
-        }
+        spanDays.id = 'timer-days'
+        document.getElementById('timer').prepend(spanDays)
     }
 
-    updateClock()
+    const updateClock = setInterval(() => {
+        const getTime = getTimeRemaning()
+        const zeroFirst = (arg) => `0${arg}`.slice(-2)
+        const timerDays = document.getElementById('timer-days')
+
+        if (getTime.timeRemaning > 0) {
+            timerDays.textContent = zeroFirst(getTime.days) + 'д :'
+            timerHours.textContent = zeroFirst(getTime.hours) + 'ч'
+            timerMinutes.textContent = zeroFirst(getTime.minutes) + 'м'
+            timerSeconds.textContent = zeroFirst(getTime.seconds) + 'с'
+        } else {
+            timerDays.textContent = '00'
+            timerHours.textContent = '00'
+            timerMinutes.textContent = '00'
+            timerSeconds.textContent = '00'
+            clearInterval(updateClock)
+        }
+    }, 1000)
+
+    showDays()
 }
 
 export default timer
