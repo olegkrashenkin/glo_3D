@@ -5,7 +5,7 @@ const smoothScroll = () => {
     menuItems.forEach(item => {
         item.addEventListener('click', (event) => {
             event.preventDefault()
-            console.dir(event.target.getAttribute('href'))
+
             const id = event.target.getAttribute('href').slice(1)
 
             document.getElementById(id).scrollIntoView({

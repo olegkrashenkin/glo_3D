@@ -2,7 +2,6 @@ const modal = () => {
     const popup = document.querySelector('.popup')
     const popupBtn = document.querySelectorAll('.popup-btn')
     const popupContent = popup.querySelector('.popup-content')
-    const closeBtn = popup.querySelector('.popup-close')
     let widht = document.documentElement.clientWidth >= 768
 
     let idAnim
@@ -47,13 +46,15 @@ const modal = () => {
         })
     })
 
-    closeBtn.addEventListener('click', () => {
-        widht = document.documentElement.clientWidth >= 768
-        if (widht) {
-            open = false
-            popupAnim()
-        } else {
-            popup.style.display = 'none'
+    popup.addEventListener('click', (e) => {
+        if (!e.target.closest('.popup-content') || e.target.classList.contains('popup-close')) {
+            widht = document.documentElement.clientWidth >= 768
+            if (widht) {
+                open = false
+                popupAnim()
+            } else {
+                popup.style.display = 'none'
+            }
         }
     })
 
