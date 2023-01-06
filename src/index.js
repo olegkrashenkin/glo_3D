@@ -4,10 +4,12 @@ import smoothScroll from './modules/smoothScroll'
 import modal from './modules/modal'
 import validateForms from './modules/validateForms'
 import tabs from './modules/tabs'
+import slider from './modules/slider'
 
-timer('08 january 2023')
+timer('10 january 2023')
 menu()
 smoothScroll()
 modal()
 validateForms()
 tabs()
+slider()
