@@ -41,7 +41,6 @@ const calc = (price = 100) => {
         }
     }
 
-
     calcBlock.addEventListener('input', (e) => {
         countCalc()
     })
