@@ -49,7 +49,6 @@ const calc = (price = 100) => {
         clearInterval(idInterval)
         countCalc()
     })
-
 }
 
 export default calc

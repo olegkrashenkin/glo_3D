@@ -1,33 +1,11 @@
+import { animate } from "./helpers"
+
 const modal = () => {
     const popup = document.querySelector('.popup')
     const popupBtn = document.querySelectorAll('.popup-btn')
     const popupContent = popup.querySelector('.popup-content')
+
     let widht = document.documentElement.clientWidth >= 768
-
-    let idAnim
-    let top = -70
-    let open
-
-    const popupAnim = () => {
-        idAnim = requestAnimationFrame(popupAnim)
-
-        if (open) {
-            if (top < 10) {
-                top += 3
-                popupContent.style.top = top + '%'
-            } else {
-                cancelAnimationFrame(idAnim)
-            }
-        } else {
-            if (top > -70) {
-                top -= 3
-                popupContent.style.top = top + '%'
-            } else {
-                cancelAnimationFrame(idAnim)
-                popup.style.display = 'none'
-            }
-        }
-    }
 
     window.addEventListener('resize', () => {
         widht = document.documentElement.clientWidth >= 768
@@ -36,13 +14,23 @@ const modal = () => {
     popupBtn.forEach(item => {
         item.addEventListener('click', () => {
             if (widht) {
-                open = true
-                popupAnim()
+                popup.style.opacity = '0'
+                popupContent.style.opacity = '0'
+                popup.style.display = 'block'
+                animate({
+                    duration: 150,
+                    timing(timeFraction) {
+                        return timeFraction;
+                    },
+                    draw(progress) {
+                        popupContent.style.top = progress * 10 + '%';
+                        popupContent.style.opacity = progress
+                        popup.style.opacity = progress
+                    }
+                });
             } else {
-                popupContent.style.top = '10%'
+                popup.style.display = 'block'
             }
-
-            popup.style.display = 'block'
         })
     })
 
@@ -50,14 +38,23 @@ const modal = () => {
         if (!e.target.closest('.popup-content') || e.target.classList.contains('popup-close')) {
             widht = document.documentElement.clientWidth >= 768
             if (widht) {
-                open = false
-                popupAnim()
+                animate({
+                    duration: 150,
+                    timing(timeFraction) {
+                        return timeFraction;
+                    },
+                    draw(progress) {
+                        popupContent.style.top = (1 - progress) * 10 + '%';
+                        popupContent.style.opacity = 1 - progress
+                        popup.style.opacity = 1 - progress
+                    }
+                });
+                setTimeout(() => popup.style.display = 'none', 150)
             } else {
                 popup.style.display = 'none'
             }
         }
     })
-
 }
 
 export default modal
