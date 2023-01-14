@@ -1,3 +1,5 @@
+import IMask from 'imask';
+
 const sendForm = ({ idForm, someElem = [] }) => {
     const form = document.getElementById(idForm)
     const statusBlock = document.createElement('div')
@@ -13,6 +15,12 @@ const sendForm = ({ idForm, someElem = [] }) => {
         }).then(res => res.json())
     }
 
+    const phoneMask = new IMask(form.querySelector('input[type="tel"]'), {
+        mask: "+{7}(000)000-00-00",
+        // lazy: false
+    });
+
+
     const submitForm = () => {
         const formData = new FormData(form)
         const formBody = {}
@@ -20,8 +28,6 @@ const sendForm = ({ idForm, someElem = [] }) => {
         statusBlock.style.color = 'white'
         statusBlock.textContent = loadText
         form.append(statusBlock)
-
-        form.querySelectorAll('input').forEach(el => el.value = '')
 
         formData.forEach((v, k) => {
             if (v) formBody[k] = v
@@ -37,26 +43,32 @@ const sendForm = ({ idForm, someElem = [] }) => {
             }
         })
 
-        sendData(formBody)
-            .then(data => {
-                statusBlock.textContent = successText
-            })
-            .catch(error => {
-                statusBlock.textContent = errorText
-            })
-            .finally(
-                setTimeout(() => {
-                    statusBlock.textContent = ''
-                }, 3000)
-            )
+        if (formBody.user_name.length >= 2 &&
+            phoneMask.masked.isComplete &&
+            /^([a-z0-9_\-\.])+\@([a-z0-9_\-\.])+\.([a-z]{2,4})$/gi.test(formBody.user_email)) {
+
+            form.querySelectorAll('input').forEach(el => el.value = '')
+
+            sendData(formBody)
+                .then(data => {
+                    statusBlock.textContent = successText
+                })
+                .catch(error => {
+                    statusBlock.textContent = errorText
+                })
+        } else {
+            statusBlock.textContent = 'Неправильно заполнена форма'
+        }
+
+        setTimeout(() => {
+            statusBlock.textContent = ''
+        }, 3000)
     }
 
     try {
-        // if (!form) throw new Error('Потерялась форма')
+        if (!form) throw new Error('Потерялась форма')
 
         form.addEventListener('submit', (e) => {
-            console.log(e);
-
             e.preventDefault()
 
             submitForm()
