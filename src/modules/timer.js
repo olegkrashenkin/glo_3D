@@ -22,7 +22,7 @@ const timer = (deadline) => {
         document.getElementById('timer').prepend(spanDays)
     }
 
-    const updateClock = setInterval(() => {
+    const updateClock = () => {
         const getTime = getTimeRemaning()
         const zeroFirst = (arg) => `0${arg}`.slice(-2)
         const timerDays = document.getElementById('timer-days')
@@ -39,9 +39,11 @@ const timer = (deadline) => {
             timerSeconds.textContent = '00'
             clearInterval(updateClock)
         }
-    }, 1000)
+    }
 
     showDays()
+    updateClock()
+    setInterval(updateClock, 1000)
 }
 
 export default timer

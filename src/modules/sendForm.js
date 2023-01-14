@@ -24,13 +24,13 @@ const sendForm = ({ idForm, someElem = [] }) => {
         form.querySelectorAll('input').forEach(el => el.value = '')
 
         formData.forEach((v, k) => {
-            formBody[k] = v
+            if (v) formBody[k] = v
         });
 
         someElem.forEach(el => {
             const element = document.getElementById(el.id)
 
-            if (el.type === 'block') {
+            if (el.type === 'block' && element.textContent != '0') {
                 formBody[element.id] = element.textContent
             } else if (el.type === 'input') {
                 formBody[element.id] = element.value
@@ -44,12 +44,19 @@ const sendForm = ({ idForm, someElem = [] }) => {
             .catch(error => {
                 statusBlock.textContent = errorText
             })
+            .finally(
+                setTimeout(() => {
+                    statusBlock.textContent = ''
+                }, 3000)
+            )
     }
 
     try {
-        if (!form) throw new Error('Потерялась форма')
+        // if (!form) throw new Error('Потерялась форма')
 
         form.addEventListener('submit', (e) => {
+            console.log(e);
+
             e.preventDefault()
 
             submitForm()
