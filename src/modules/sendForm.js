@@ -1,19 +1,27 @@
 const sendForm = ({ idForm, someElem = [] }) => {
     const form = document.getElementById(idForm)
+    const statusBlock = document.createElement('div')
+    const loadText = 'Загрузка...'
+    const errorText = 'Ошибка...'
+    const successText = 'Спасибо! Наш менеджер с вами свяжется!'
 
-    const sendData = async (data) => {
-        return await fetch('https://jsonplaceholder.typicode.com/posts', {
+    const sendData = (data) => {
+        return fetch('https://jsonplaceholder.typicode.com/posts', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: { 'Content-Type': 'application/json' },
         }).then(res => res.json())
     }
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault()
-
+    const submitForm = () => {
         const formData = new FormData(form)
         const formBody = {}
+
+        statusBlock.style.color = 'white'
+        statusBlock.textContent = loadText
+        form.append(statusBlock)
+
+        form.querySelectorAll('input').forEach(el => el.value = '')
 
         formData.forEach((v, k) => {
             formBody[k] = v
@@ -29,10 +37,26 @@ const sendForm = ({ idForm, someElem = [] }) => {
             }
         })
 
-        sendData(formBody).then(data => console.log(data))
-    })
+        sendData(formBody)
+            .then(data => {
+                statusBlock.textContent = successText
+            })
+            .catch(error => {
+                statusBlock.textContent = errorText
+            })
+    }
 
+    try {
+        if (!form) throw new Error('Потерялась форма')
 
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            submitForm()
+        })
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 export default sendForm
